@@ -405,7 +405,7 @@
 		 * - text: A longer textual description of the error, containing further details.
 		 *
 		 * HTTP status codes returned on error can be any of the following:
-		 * - 400: An input parameter is missing or invalid.
+		 * - 400: An input parameter is missing or invalid, or the API call did not meet the API requirements.
 		 * - 403: Your session is not properly authenticated, or you do not have access to the requested resource.
 		 * - 404: The API cannot find the resource you requested, which may occur when an invalid ID is specified.
 		 * - 429: You have exceeded the rate limit on certain API calls.
@@ -419,6 +419,7 @@
 		 * - ApiKeyMismatch: The API key specified is not valid for the requested account.
 		 * - InputFailure: An invalid value was specified for one of the input parameters.
 		 * - InvalidToken: The token does not correspond to a valid session or has expired.
+		 * - MethodDisallowed: All API calls must be made using the POST request method.
 		 * - MissingParameter: A required parameter is missing.
 		 * - NotFound: The requested resource was not found. Check that the specified ID is valid.
 		 * - NotLatest: Attempting to reissue a certificate from an obsolete ID.
@@ -428,7 +429,11 @@
 		 * - SignatureFailure: The request was not properly signed.
 		 * - StatusDisallowed: An invalid status change was requested for a certificate.
 		 * - UnknownError: Generic fatal error condition. Please contact support.
-		 *
+		 * 
+		 * Proper implementations should never encounter errors such as
+		 * MethodDisallowed or SignatureFailure. They are included in the list
+		 * above for completeness.
+		 * 
 		 * @return array|null Array of error details if the previous API call resulted in failure, NULL if that call was successful.
 		 */
 		public function last_error ()
