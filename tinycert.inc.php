@@ -9,6 +9,7 @@
 		const CERTIFICATE_CHAIN = 'chain';
 		const HASH_SHA1 = 'sha1';
 		const HASH_SHA256 = 'sha256';
+		const PKCS12 = 'pkcs12';
 		const PRIVKEY_DECRYPTED = 'key.dec';
 		const PRIVKEY_ENCRYPTED = 'key.enc';
 		const REQUEST = 'csr';
@@ -275,13 +276,18 @@
 		 * a .pem file.
 		 *
 		 * @param int $cert_id The ID of the certificate for which to retrieve the certificate, signing request or private key.
-		 * @param string $what Used to select which data to retrieve. One of TinyCert::CERTIFICATE, TinyCert::CERTIFICATE_CHAIN, TinyCert::REQUEST, TinyCert::PRIVKEY_DECRYPTED, TinyCert::PRIVKEY_ENCRYPTED
-		 * @return string|false A string with the PEM encoded certificate, signing request or private key, false on error.
+		 * @param string $what Used to select which data to retrieve. One of TinyCert::CERTIFICATE, TinyCert::CERTIFICATE_CHAIN, TinyCert::REQUEST, TinyCert::PRIVKEY_DECRYPTED, TinyCert::PRIVKEY_ENCRYPTED or TinyCert::PKCS12
+		 * @return string|false A string with the PEM encoded certificate (raw data if a PKCS12 archive was requested), signing request or private key, false on error.
 		 */
 		public function cert_get ($cert_id, $what)
 		{
 			$resp = $this->do_request ('/cert/get', array ('cert_id' => intval ($cert_id), 'token' => $this->token, 'what' => $what));
-			return $resp ? $resp ['pem'] : false;
+			if ($what === self::PKCS12)
+			{
+				return $resp ? base64_decode ($resp ['pkcs12']) : false;
+			} else {
+				return $resp ? $resp ['pem'] : false;
+			}
 		}
 		
 		/**
